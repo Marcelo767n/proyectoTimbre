@@ -4,6 +4,7 @@
 
 QueueHandle_t cola_timbre = NULL;
 
+// Interrupción del botón
 static void IRAM_ATTR boton_isr_handler(void* arg) {
     uint32_t pin = (uint32_t) arg;
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -13,10 +14,10 @@ static void IRAM_ATTR boton_isr_handler(void* arg) {
     }
 }
 
+// Inicialización de Botón y Relé
 void init_hardware(void) {
     gpio_config_t io_conf = {};
 
-    // Relé
     io_conf.intr_type = GPIO_INTR_DISABLE;
     io_conf.mode = GPIO_MODE_OUTPUT;
     io_conf.pin_bit_mask = (1ULL << PIN_RELE);
@@ -25,7 +26,6 @@ void init_hardware(void) {
     gpio_config(&io_conf);
     gpio_set_level(PIN_RELE, 0);
 
-    // Botón
     io_conf.intr_type = GPIO_INTR_NEGEDGE;
     io_conf.mode = GPIO_MODE_INPUT;
     io_conf.pin_bit_mask = (1ULL << PIN_BOTON);
@@ -37,20 +37,73 @@ void init_hardware(void) {
     gpio_install_isr_service(0);
     gpio_isr_handler_add(PIN_BOTON, boton_isr_handler, (void*) PIN_BOTON);
     
-    ESP_LOGI("HARDWARE", "Hardware de control inicializado.");
+    ESP_LOGI("HARDWARE", "Controles mecatrónicos listos.");
 }
 
+// Inicialización de la Cámara
+void init_camara(void) {
+    camera_config_t config;
+    config.ledc_channel = LEDC_CHANNEL_0;
+    config.ledc_timer = LEDC_TIMER_0;
+    config.pin_d0 = CAM_PIN_Y2;
+    config.pin_d1 = CAM_PIN_Y3;
+    config.pin_d2 = CAM_PIN_Y4;
+    config.pin_d3 = CAM_PIN_Y5;
+    config.pin_d4 = CAM_PIN_Y6;
+    config.pin_d5 = CAM_PIN_Y7;
+    config.pin_d6 = CAM_PIN_Y8;
+    config.pin_d7 = CAM_PIN_Y9;
+    config.pin_xclk = CAM_PIN_XCLK;
+    config.pin_pclk = CAM_PIN_PCLK;
+    config.pin_vsync = CAM_PIN_VSYNC;
+    config.pin_href = CAM_PIN_HREF;
+    config.pin_sccb_sda = CAM_PIN_SIOD;
+    config.pin_sccb_scl = CAM_PIN_SIOC;
+    config.pin_pwdn = CAM_PIN_PWDN;
+    config.pin_reset = CAM_PIN_RESET;
+    config.xclk_freq_hz = 20000000;
+    config.pixel_format = PIXFORMAT_JPEG; 
+    
+    // Configuración de calidad y tamaño
+    config.frame_size = FRAMESIZE_VGA; // 640x480
+    config.jpeg_quality = 12; // Menor número = mayor calidad (0-63)
+    config.fb_count = 1; // 1 imagen en el Frame Buffer
+
+    // Inicializar el sensor
+    esp_err_t err = esp_camera_init(&config);
+    if (err != ESP_OK) {
+        ESP_LOGE("CAMARA", "Error al iniciar la camara: 0x%x", err);
+        return;
+    }
+    ESP_LOGI("CAMARA", "Sensor OV2640 inicializado correctamente.");
+}
+
+// Tarea principal (Botón -> Relé -> Foto)
 void tarea_timbre(void *pvParameters) {
     uint32_t pin_pulsado;
     while(1) {
         if(xQueueReceive(cola_timbre, &pin_pulsado, portMAX_DELAY)) {
-            ESP_LOGW("HARDWARE", "Boton presionado en GPIO %lu", pin_pulsado);
+            ESP_LOGW("SISTEMA", "¡Timbre presionado!");
             
+            // 1. Suena el timbre
             gpio_set_level(PIN_RELE, 1);
             vTaskDelay(pdMS_TO_TICKS(1000));
             gpio_set_level(PIN_RELE, 0);
             
-            ESP_LOGI("HARDWARE", "Timbre sonó. (Aquí dispararemos la cámara)");
+            // 2. Tomar la foto
+            ESP_LOGI("CAMARA", "Capturando imagen...");
+            camera_fb_t * pic = esp_camera_fb_get();
+            
+            if(!pic) {
+                ESP_LOGE("CAMARA", "Fallo al capturar la imagen. Frame buffer vacío.");
+            } else {
+                ESP_LOGI("CAMARA", "¡Éxito! Foto tomada. Tamaño en RAM: %zu bytes", pic->len);
+                
+                // MÁS ADELANTE: Aquí llamaremos a la función que enviará la foto por HTTP
+                
+                // 3. Limpiar memoria RAM para la próxima foto
+                esp_camera_fb_return(pic);
+            }
         }
     }
 }
