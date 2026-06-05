@@ -6,7 +6,7 @@
 #include "freertos/queue.h"
 
 // --- CREDENCIALES WIFI ---
-#define WIFI_SSID      "Flia. Navarro"
+#define WIFI_SSID      "Flia. NAVARRO"
 #define WIFI_PASS      "Navarro711"
 #define MAX_REINTENTOS 5
 
