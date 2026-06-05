@@ -1,6 +1,8 @@
 #include "funciones.h"
 #include <stdio.h>
 #include "esp_log.h"
+#include "esp_http_client.h"
+
 
 QueueHandle_t cola_timbre = NULL;
 
@@ -99,9 +101,29 @@ void tarea_timbre(void *pvParameters) {
             } else {
                 ESP_LOGI("CAMARA", "¡Éxito! Foto tomada. Tamaño en RAM: %zu bytes", pic->len);
                 
-                // MÁS ADELANTE: Aquí llamaremos a la función que enviará la foto por HTTP
+                // --- INICIO DEL ENVÍO HTTP ---
+                ESP_LOGI("HTTP", "Conectando al servidor...");
+                esp_http_client_config_t config = {
+                    .url = "http://192.168.1.5:8000/upload", 
+                    .method = HTTP_METHOD_POST,
+                };
+                esp_http_client_handle_t client = esp_http_client_init(&config);
                 
-                // 3. Limpiar memoria RAM para la próxima foto
+                // Preparamos el paquete indicando que es un JPEG
+                esp_http_client_set_header(client, "Content-Type", "image/jpeg");
+                esp_http_client_set_post_field(client, (const char *)pic->buf, pic->len);
+                
+                // Disparamos el paquete
+                esp_err_t err = esp_http_client_perform(client);
+                if (err == ESP_OK) {
+                    ESP_LOGI("HTTP", "¡Foto entregada al servidor! Status = %d", esp_http_client_get_status_code(client));
+                } else {
+                    ESP_LOGE("HTTP", "Error al enviar: %s", esp_err_to_name(err));
+                }
+                esp_http_client_cleanup(client);
+                // --- FIN DEL ENVÍO HTTP ---
+                
+                // Limpiar memoria RAM para la próxima foto
                 esp_camera_fb_return(pic);
             }
         }
