@@ -34,8 +34,27 @@ static esp_err_t html_handler(httpd_req_t *req) {
     httpd_resp_send(req, html_page, HTTPD_RESP_USE_STRLEN);
     return ESP_OK;
 }
+// --- Función auxiliar para limpiar el texto de la web (URL Decode) ---
+static void decodificar_url(char *str) {
+    char *pstr = str, *buf = str;
+    while (*pstr) {
+        if (*pstr == '%') {
+            if (pstr[1] && pstr[2]) {
+                int c;
+                sscanf(pstr + 1, "%2x", &c);
+                *buf++ = (char)c;
+                pstr += 3;
+            }
+        } else if (*pstr == '+') {
+            *buf++ = ' '; // Convierte los '+' en espacios normales
+            pstr++;
+        } else {
+            *buf++ = *pstr++;
+        }
+    }
+    *buf = '\0';
+}
 
-// Guarda los datos ingresados en la memoria NVS y reinicia
 static esp_err_t guardar_credenciales_handler(httpd_req_t *req) {
     char buf[100];
     int len = httpd_req_recv(req, buf, sizeof(buf) - 1);
@@ -56,6 +75,10 @@ static esp_err_t guardar_credenciales_handler(httpd_req_t *req) {
             pass_start += 5;
             strncpy(pass, pass_start, strlen(pass_start));
 
+            // ¡AQUI ESTA LA MAGIA! Limpiamos los textos antes de guardarlos
+            decodificar_url(ssid);
+            decodificar_url(pass);
+
             nvs_handle_t nvs_handle;
             nvs_open("storage", NVS_READWRITE, &nvs_handle);
             nvs_set_str(nvs_handle, "ssid", ssid);
@@ -64,7 +87,7 @@ static esp_err_t guardar_credenciales_handler(httpd_req_t *req) {
             nvs_close(nvs_handle);
 
             httpd_resp_send(req, "<h2>¡Datos guardados! El timbre se reiniciara en unos segundos...</h2>", HTTPD_RESP_USE_STRLEN);
-            ESP_LOGW(TAG, "Credenciales guardadas. Reiniciando en 2 seg...");
+            ESP_LOGW(TAG, "Credenciales guardadas: SSID='%s', PASS='%s'", ssid, pass);
             vTaskDelay(2000 / portTICK_PERIOD_MS);
             esp_restart();
         }
