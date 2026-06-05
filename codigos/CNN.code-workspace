@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"path": "../../../vision artificial/CNN"
+		},
+		{
+			"name": "examen3",
+			"path": "../../../../../../Documents/PlatformIO/Projects/examen3"
+		},
+		{
+			"name": "Timbre_IoT_ESP32CAM",
+			"path": "../../../../../../Documents/PlatformIO/Projects/Timbre_IoT_ESP32CAM"
+		}
+	],
+	"settings": {
+		"stm32-for-vscode.openOCDPath": false,
+		"stm32-for-vscode.makePath": false,
+		"stm32-for-vscode.armToolchainPath": false,
+		"stm32cube-ide-clangd.path": "cube"
+	}
+}
