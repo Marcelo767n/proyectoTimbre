@@ -1,0 +1,289 @@
+# Creado por https://www.toptal.com/developers/gitignore/api/python,c,cmake,platformio,visualstudiocode,git
+# Editar en https://www.toptal.com/developers/gitignore?templates=python,c,cmake,platformio,visualstudiocode,git
+
+### C ###
+# Requisitos previos
+*.d
+
+# Archivos objeto
+*.o
+*.ko
+*.obj
+*.duende
+
+# Salida del enlazador
+*.seda
+*.mapa
+*.exp
+
+# Encabezados precompilados
+*.gch
+*.pch
+
+# Bibliotecas
+*.lib
+*.a
+*.la
+*.lo
+
+# Objetos compartidos (incluidas las DLL de Windows)
+*.dll
+*.entonces
+*.entonces.*
+*.dylib
+
+# Archivos ejecutables
+*.exe
+*.afuera
+*.app
+*.i*86
+*.x86_64
+*.maleficio
+
+# Archivos de depuración
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Resultados de la compilación del módulo del kernel
+*.mod*
+*.cmd
+.tmp_versions/
+módulos.orden
+Módulo.symvers
+Archivo Mkfile.old
+dkms.conf
+
+### CMake ###
+CMakeLists.txt.usuario
+CMakeCache.txt
+Archivos CMake
+Scripts de CMake
+Pruebas
+Makefile
+cmake_install.cmake
+archivo install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+
+### Parche CMake ###
+CMakeUserPresets.json
+
+# Proyectos externos
+*-prefijo/
+
+### Git ###
+# Creado por git para copias de seguridad. Para desactivar las copias de seguridad en Git:
+# $ git config --global mergetool.keepBackup false
+*.original
+
+# Creado por git al usar herramientas de fusión para conflictos
+*.RESPALDO.*
+*.BASE.*
+*.LOCAL.*
+*.REMOTO.*
+*_COPIA_DE_SEGURIDAD_*.txt
+*_BASE_*.txt
+*_LOCAL_*.txt
+*_REMOTO_*.txt
+
+### PlataformaIO ###
+.pioenvs
+.piolibdeps
+.clang_complete
+.gcc-flags.json
+.pio
+
+### Python ###
+# Archivos DLL compilados en bytes / optimizados
+__pycache__/
+*.py[código]
+*$py.class
+
+# Extensiones de C
+
+# Distribución / embalaje
+.Pitón
+construir/
+desarrollar huevos/
+distribución/
+descargas/
+huevos/
+.huevos/
+biblioteca/
+lib64/
+regiones/
+sdist/
+var/
+ruedas/
+compartir/python-wheels/
+*.egg-info/
+.installed.cfg
+*.huevo
+MANIFIESTO
+
+# PyInstaller
+# Normalmente, estos archivos se escriben mediante un script de Python a partir de una plantilla.
+# antes de que PyInstaller compile el ejecutable, para inyectarle información de fecha u otra.
+*.manifiesto
+*.especulación
+
+# Registros del instalador
+pip-log.txt
+pip-eliminar-este-directorio.txt
+
+# Informes de pruebas unitarias/cobertura
+htmlcov/
+.tox/
+.nox/
+.cobertura
+.cobertura.*
+.cache
+pruebas de nariz.xml
+cobertura.xml
+*.cubrir
+*.py,cover
+.hipótesis/
+.pytest_cache/
+cubrir/
+
+# Traducciones
+*.mes
+*.olla
+
+# Cosas de Django:
+*.registro
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Cosas de Flask:
+instancia/
+.webassets-cache
+
+# Cosas de Scrapy:
+.scrapy
+
+# Documentación de Sphinx
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+objetivo/
+
+# Cuaderno Jupyter
+.ipynb_checkpoints
+
+# IPython
+perfil_predeterminado/
+ipython_config.py
+
+# pyenv
+# Para una biblioteca o paquete, es posible que desee ignorar estos archivos ya que el código es
+# Diseñado para ejecutarse en múltiples entornos; de lo contrario, consúltelos en:
+# .python-version
+
+# pipenv
+# Según pypa/pipenv#598, se recomienda incluir Pipfile.lock en el control de versiones.
+# Sin embargo, en caso de colaboración, si existen dependencias específicas de la plataforma o dependencias
+# Al no tener soporte multiplataforma, pipenv puede instalar dependencias que no funcionan o no funcionan.
+# Instalar todas las dependencias necesarias.
+#Pipfile.lock
+
+# poesía
+# Al igual que con Pipfile.lock, generalmente se recomienda incluir poetry.lock en el control de versiones.
+# Esto se recomienda especialmente para paquetes binarios para garantizar la reproducibilidad y es más
+# comúnmente ignorado para bibliotecas.
+# https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
+#poesía.bloqueo
+
+# pdm
+# Al igual que con Pipfile.lock, generalmente se recomienda incluir pdm.lock en el control de versiones.
+#pdm.lock
+# pdm almacena las configuraciones de todo el proyecto en .pdm.toml, pero se recomienda no incluirlo.
+# en control de versiones.
+# https://pdm.fming.dev/#use-with-ide
+.pdm.toml
+
+# PEP 582; utilizado por ejemplo en github.com/David-OConnor/pyflow y github.com/pdm-project/pdm
+__pypackages__/
+
+# Cosas de apio
+Horario de celerybeat
+acelerybeat.pid
+
+# Archivos analizados por SageMath
+*.sage.py
+
+# Entornos
+.env
+.venv
+entorno/
+venv/
+ENTORNO/
+env.bak/
+venv.bak/
+
+# Configuración del proyecto Spyder
+Proyecto .spyder
+Proyecto espía
+
+# Configuración del proyecto de cuerda
+Proyecto de cuerda
+
+# Documentación de mkdocs
+/sitio
+
+# mipy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Comprobador de tipos de Pyre
+.pira/
+
+# analizador de tipos estático pytype
+.pytype/
+
+# Símbolos de depuración de Cython
+cython_debug/
+
+# PyCharm
+# La plantilla específica de JetBrains se mantiene en un archivo JetBrains.gitignore separado que puede
+# Se puede encontrar en https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
+# y se puede agregar al gitignore global o fusionarse en este archivo. Para una solución más radical
+# opción (no recomendada) puede descomentar lo siguiente para ignorar toda la carpeta de ideas.
+#.idea/
+
+### Parche de Python ###
+# Archivo de configuración local de Poetry - https://python-poetry.org/docs/configuration/#local-configuration
+poesía.toml
+
+# ruff
+.ruff_cache/
+
+# Archivos de configuración de LSP
+pyrightconfig.json
+
+### Código de Visual Studio ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+
+# Historial local para Visual Studio Code
+.historia/
+
+# Extensiones de Visual Studio Code creadas
+*.vsix
+
+### Parche de VisualStudioCode ###
+# Ignorar todo el historial local de archivos
+.historia
+iónido
+
+# Fin de https://www.toptal.com/developers/gitignore/api/python,c,cmake,platformio,visualstudiocode,git
