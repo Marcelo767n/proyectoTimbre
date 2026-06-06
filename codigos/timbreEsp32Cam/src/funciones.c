@@ -38,6 +38,14 @@ void init_hardware(void) {
     cola_timbre = xQueueCreate(5, sizeof(uint32_t));
     gpio_install_isr_service(0);
     gpio_isr_handler_add(PIN_BOTON, boton_isr_handler, (void*) PIN_BOTON);
+    // Flash LED
+    io_conf.intr_type = GPIO_INTR_DISABLE;
+    io_conf.mode = GPIO_MODE_OUTPUT;
+    io_conf.pin_bit_mask = (1ULL << PIN_FLASH);
+    io_conf.pull_down_en = 0;
+    io_conf.pull_up_en = 0;
+    gpio_config(&io_conf);
+    gpio_set_level(PIN_FLASH, 0); // Nos aseguramos de que inicie apagado
     
     ESP_LOGI("HARDWARE", "Controles mecatrónicos listos.");
 }
@@ -92,9 +100,20 @@ void tarea_timbre(void *pvParameters) {
             vTaskDelay(pdMS_TO_TICKS(1000));
             gpio_set_level(PIN_RELE, 0);
             
-            // 2. Tomar la foto
+            // 2. Encender Flash y dar tiempo de ajuste al lente
+            ESP_LOGW("CAMARA", "Encendiendo Flash...");
+            gpio_set_level(PIN_FLASH, 1);
+            
+            // Esperamos 800ms para que el sensor ajuste el brillo automáticamente
+            vTaskDelay(pdMS_TO_TICKS(800)); 
+            
+            // 3. Tomar la foto iluminada
             ESP_LOGI("CAMARA", "Capturando imagen...");
             camera_fb_t * pic = esp_camera_fb_get();
+            
+            // Apagamos el flash inmediatamente para no gastar energía ni generar calor
+            gpio_set_level(PIN_FLASH, 0);
+            ESP_LOGW("CAMARA", "Flash apagado.");
             
             if(!pic) {
                 ESP_LOGE("CAMARA", "Fallo al capturar la imagen. Frame buffer vacío.");
@@ -109,11 +128,9 @@ void tarea_timbre(void *pvParameters) {
                 };
                 esp_http_client_handle_t client = esp_http_client_init(&config);
                 
-                // Preparamos el paquete indicando que es un JPEG
                 esp_http_client_set_header(client, "Content-Type", "image/jpeg");
                 esp_http_client_set_post_field(client, (const char *)pic->buf, pic->len);
                 
-                // Disparamos el paquete
                 esp_err_t err = esp_http_client_perform(client);
                 if (err == ESP_OK) {
                     ESP_LOGI("HTTP", "¡Foto entregada al servidor! Status = %d", esp_http_client_get_status_code(client));
@@ -123,7 +140,6 @@ void tarea_timbre(void *pvParameters) {
                 esp_http_client_cleanup(client);
                 // --- FIN DEL ENVÍO HTTP ---
                 
-                // Limpiar memoria RAM para la próxima foto
                 esp_camera_fb_return(pic);
             }
         }

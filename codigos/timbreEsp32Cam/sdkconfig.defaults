@@ -1,0 +1,12 @@
+# Configurar el tamaño de la memoria Flash principal a 4MB
+CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
+
+# Encender el chip de memoria RAM externa (PSRAM)
+CONFIG_ESP32_SPIRAM_SUPPORT=y
+CONFIG_SPIRAM=y
+CONFIG_SPIRAM_BOOT_INIT=y
+CONFIG_SPIRAM_USE_MALLOC=y
+# Usar tabla de particiones personalizada
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+CONFIG_PARTITION_TABLE_FILENAME="partitions.csv"
