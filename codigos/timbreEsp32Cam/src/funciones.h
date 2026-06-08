@@ -9,10 +9,11 @@
 // --- PINES DEL HARDWARE EXTERNO ---
 #define PIN_BOTON GPIO_NUM_15
 #define PIN_RELE  GPIO_NUM_13
-#define PIN_FLASH GPIO_NUM_4  // El LED ultrabrillante de la ESP32-CAM
+#define PIN_FLASH GPIO_NUM_4
+
 // --- PINES INTERNOS DE LA CAMARA (AI-THINKER) ---
 #define CAM_PIN_PWDN 32
-#define CAM_PIN_RESET -1 // No conectado al reset
+#define CAM_PIN_RESET -1
 #define CAM_PIN_XCLK 0
 #define CAM_PIN_SIOD 26
 #define CAM_PIN_SIOC 27
